@@ -1893,7 +1893,7 @@ class XCopilotContentScript {
             
             .friend-details {
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
                 gap: 12px;
                 flex: 1;
                 min-width: 0;
@@ -1907,12 +1907,22 @@ class XCopilotContentScript {
                 background: #ffffff;
                 transition: all 0.2s ease;
                 font-family: inherit;
+                flex: 1;
+                min-width: 0;
             }
             
             .friend-details input:focus {
                 outline: none;
                 border-color: #1d9bf0;
                 box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+            }
+            
+            .friend-details input:first-child {
+                flex: 1.2;
+            }
+            
+            .friend-details input:last-child {
+                flex: 1;
             }
             
             .friend-actions {
@@ -2050,6 +2060,16 @@ class XCopilotContentScript {
                 
                 .modal-friend-item .friend-info {
                     width: 100%;
+                }
+                
+                .friend-details {
+                    flex-direction: column;
+                    gap: 12px;
+                }
+                
+                .friend-details input:first-child,
+                .friend-details input:last-child {
+                    flex: 1;
                 }
                 
                 .friend-actions {
@@ -2241,11 +2261,21 @@ class XCopilotContentScript {
                     background: #000000;
                     border-color: #2f3336;
                     color: #ffffff;
+                    flex: 1;
+                    min-width: 0;
                 }
                 
                 .friend-details input:focus {
                     border-color: #1d9bf0;
                     box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+                }
+                
+                .friend-details input:first-child {
+                    flex: 1.2;
+                }
+                
+                .friend-details input:last-child {
+                    flex: 1;
                 }
                 
                 .modal-friends-list::-webkit-scrollbar-track {
