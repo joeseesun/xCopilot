@@ -1927,54 +1927,65 @@ class XCopilotContentScript {
             }
             
             .friend-actions button {
-                width: 40px;
-                height: 40px;
+                width: 36px;
+                height: 36px;
                 border: none;
-                border-radius: 10px;
+                border-radius: 8px;
                 cursor: pointer;
-                font-size: 16px;
                 transition: all 0.2s ease;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-weight: 600;
+                font-weight: 500;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
             }
             
             .friend-actions .move-btn {
-                background: #6b7280;
-                color: #ffffff;
+                background: rgba(107, 114, 128, 0.1);
+                color: #6b7280;
+                border: 1px solid rgba(107, 114, 128, 0.2);
             }
             
             .friend-actions .move-btn:hover:not(.disabled) {
-                background: #4b5563;
-                transform: scale(1.1);
+                background: rgba(107, 114, 128, 0.15);
+                color: #4b5563;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
             }
             
             .friend-actions .move-btn.disabled {
-                background: #e5e7eb;
+                background: rgba(229, 231, 235, 0.5);
                 color: #9ca3af;
                 cursor: not-allowed;
-                opacity: 0.5;
+                opacity: 0.6;
+                border: 1px solid rgba(229, 231, 235, 0.3);
             }
             
             .friend-actions .save-btn {
-                background: #10b981;
-                color: #ffffff;
+                background: rgba(16, 185, 129, 0.1);
+                color: #10b981;
+                border: 1px solid rgba(16, 185, 129, 0.2);
             }
             
             .friend-actions .save-btn:hover {
-                background: #059669;
-                transform: scale(1.1);
+                background: rgba(16, 185, 129, 0.15);
+                color: #059669;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
             }
             
             .friend-actions .delete-btn {
-                background: #ef4444;
-                color: #ffffff;
+                background: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+                border: 1px solid rgba(239, 68, 68, 0.2);
             }
             
             .friend-actions .delete-btn:hover {
-                background: #dc2626;
-                transform: scale(1.1);
+                background: rgba(239, 68, 68, 0.15);
+                color: #dc2626;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
             }
             
             /* 滚动条样式 */
@@ -2247,6 +2258,49 @@ class XCopilotContentScript {
                 
                 .modal-friends-list::-webkit-scrollbar-thumb:hover {
                     background: #657786;
+                }
+                
+                /* 好友操作按钮深色模式 */
+                .friend-actions .move-btn {
+                    background: rgba(107, 114, 128, 0.15);
+                    color: #9ca3af;
+                    border: 1px solid rgba(107, 114, 128, 0.3);
+                }
+                
+                .friend-actions .move-btn:hover:not(.disabled) {
+                    background: rgba(107, 114, 128, 0.25);
+                    color: #d1d5db;
+                    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+                }
+                
+                .friend-actions .move-btn.disabled {
+                    background: rgba(75, 85, 99, 0.3);
+                    color: #6b7280;
+                    border: 1px solid rgba(75, 85, 99, 0.2);
+                }
+                
+                .friend-actions .save-btn {
+                    background: rgba(16, 185, 129, 0.15);
+                    color: #34d399;
+                    border: 1px solid rgba(16, 185, 129, 0.3);
+                }
+                
+                .friend-actions .save-btn:hover {
+                    background: rgba(16, 185, 129, 0.25);
+                    color: #6ee7b7;
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                }
+                
+                .friend-actions .delete-btn {
+                    background: rgba(239, 68, 68, 0.15);
+                    color: #f87171;
+                    border: 1px solid rgba(239, 68, 68, 0.3);
+                }
+                
+                .friend-actions .delete-btn:hover {
+                    background: rgba(239, 68, 68, 0.25);
+                    color: #fca5a5;
+                    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
                 }
             }
         `;
@@ -2548,10 +2602,26 @@ class XCopilotContentScript {
                     </div>
                 </div>
                 <div class="friend-actions">
-                    <button class="move-btn ${index === 0 ? 'disabled' : ''}" data-direction="up" title="上移" ${index === 0 ? 'disabled' : ''}>↑</button>
-                    <button class="move-btn ${index === this.friends.length - 1 ? 'disabled' : ''}" data-direction="down" title="下移" ${index === this.friends.length - 1 ? 'disabled' : ''}>↓</button>
-                    <button class="save-btn" title="保存">💾</button>
-                    <button class="delete-btn" title="删除">🗑️</button>
+                    <button class="move-btn ${index === 0 ? 'disabled' : ''}" data-direction="up" title="上移" ${index === 0 ? 'disabled' : ''}>
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 3.5a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-1 0V4.707L5.354 6.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 4.707V4a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                    </button>
+                    <button class="move-btn ${index === this.friends.length - 1 ? 'disabled' : ''}" data-direction="down" title="下移" ${index === this.friends.length - 1 ? 'disabled' : ''}>
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 12.5a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-1 0v8.793L5.354 9.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 11.293V12a.5.5 0 0 0 .5.5z"/>
+                        </svg>
+                    </button>
+                    <button class="save-btn" title="保存">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                        </svg>
+                    </button>
+                    <button class="delete-btn" title="删除">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84L13.962 3.5H14.5a.5.5 0 0 0 0-1h-1.004a.58.58 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                        </svg>
+                    </button>
                 </div>
             `;
             
