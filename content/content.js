@@ -324,6 +324,53 @@ class XCopilotContentScript {
     }
 
     /**
+     * 获取当前登录用户的用户名
+     */
+    getCurrentLoggedInUser() {
+        try {
+            // 尝试从页面中获取当前登录用户的信息
+            // 方法1: 从导航栏的用户头像链接获取
+            const userAvatarLink = document.querySelector('a[data-testid="AppTabBar_Profile_Link"]');
+            if (userAvatarLink && userAvatarLink.href) {
+                const match = userAvatarLink.href.match(/x\.com\/([^\/\?]+)/);
+                if (match && match[1]) {
+                    console.log("🔍 ME: Found logged-in user from avatar link:", match[1]);
+                    return match[1];
+                }
+            }
+            
+            // 方法2: 从侧边栏的用户信息获取
+            const sidebarUserLink = document.querySelector('a[data-testid="SideNav_AccountSwitcher_Button"]');
+            if (sidebarUserLink) {
+                const usernameSpan = sidebarUserLink.querySelector('[data-testid="UserName"] span');
+                if (usernameSpan && usernameSpan.textContent.startsWith('@')) {
+                    const username = usernameSpan.textContent.replace('@', '');
+                    console.log("🔍 ME: Found logged-in user from sidebar:", username);
+                    return username;
+                }
+            }
+            
+            // 方法3: 尝试从其他可能的位置获取
+            const profileLinks = document.querySelectorAll('a[href*="/"]');
+            for (const link of profileLinks) {
+                if (link.href && link.href.includes('x.com/') && link.getAttribute('aria-label')?.includes('Profile')) {
+                    const match = link.href.match(/x\.com\/([^\/\?]+)/);
+                    if (match && match[1] && !match[1].startsWith('i/')) {
+                        console.log("🔍 ME: Found logged-in user from profile link:", match[1]);
+                        return match[1];
+                    }
+                }
+            }
+            
+            console.log("🔍 ME: Could not determine logged-in user");
+            return null;
+        } catch (error) {
+            console.error("🔍 ME: Error getting logged-in user:", error);
+            return null;
+        }
+    }
+
+    /**
      * 检测当前页面的用户
      */
     async detectCurrentUser() {
@@ -491,16 +538,16 @@ class XCopilotContentScript {
                                  : this.currentUser.username;
                 
                 if (this.currentUser.isOnUserProfilePage) {
-                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文...`;
+                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文... (或输入 /me 搜索自己)`;
                 } else if (this.currentUser.isOnTweetDetailPage) {
-                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文...`;
+                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文... (或输入 /me 搜索自己)`;
                 } else if (this.currentUser.isOnUserSubPage) {
-                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文...`;
+                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文... (或输入 /me 搜索自己)`;
                 } else {
-                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文...`;
+                    generalSearchInput.placeholder = `搜索 ${nameToShow} 的推文... (或输入 /me 搜索自己)`;
                 }
             } else {
-                generalSearchInput.placeholder = '搜索 X 推文...';
+                generalSearchInput.placeholder = '搜索 X 推文... (或输入 /me 搜索自己)';
             }
             
             console.log("🔍 PLACEHOLDER: Updated to =", generalSearchInput.placeholder);
@@ -911,23 +958,41 @@ class XCopilotContentScript {
                 return;
             }
             
-            // 根据当前页面上下文构建搜索查询
             let finalQuery = query;
             
-            // 更严格的用户页面验证
-            if (this.currentUser && this.currentUser.username && this.isValidUserContext()) {
-                // 如果在用户页面或推文详情页，添加用户限定条件
-                if (this.currentUser.isOnUserProfilePage || 
-                    this.currentUser.isOnTweetDetailPage || 
-                    this.currentUser.isOnUserSubPage) {
-                    
-                    finalQuery = `${query} from:${this.currentUser.username}`;
-                    console.log("🔍 SEARCH: Added user context, final query =", finalQuery);
+            // 检查是否是 /me 命令
+            if (query.toLowerCase().startsWith('/me ')) {
+                const searchTerm = query.substring(4).trim(); // 移除 "/me " 前缀
+                if (!searchTerm) {
+                    alert("请在 /me 后面输入搜索关键词，如：/me 今天的想法");
+                    return;
+                }
+                
+                // 获取当前登录用户
+                const loggedInUser = this.getCurrentLoggedInUser();
+                if (loggedInUser) {
+                    finalQuery = `${searchTerm} from:${loggedInUser}`;
+                    console.log("🔍 SEARCH: /me command detected, searching own content:", finalQuery);
                 } else {
-                    console.log("🔍 SEARCH: User detected but not on user-specific page, using original query");
+                    alert("无法获取当前登录用户信息，请确保已登录X账号");
+                    return;
                 }
             } else {
-                console.log("🔍 SEARCH: No valid user context, using original query");
+                // 原有的用户上下文逻辑
+                if (this.currentUser && this.currentUser.username && this.isValidUserContext()) {
+                    // 如果在用户页面或推文详情页，添加用户限定条件
+                    if (this.currentUser.isOnUserProfilePage || 
+                        this.currentUser.isOnTweetDetailPage || 
+                        this.currentUser.isOnUserSubPage) {
+                        
+                        finalQuery = `${query} from:${this.currentUser.username}`;
+                        console.log("🔍 SEARCH: Added user context, final query =", finalQuery);
+                    } else {
+                        console.log("🔍 SEARCH: User detected but not on user-specific page, using original query");
+                    }
+                } else {
+                    console.log("🔍 SEARCH: No valid user context, using original query");
+                }
             }
             
             // 构建搜索URL
