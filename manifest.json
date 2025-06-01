@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "xCopilot - Twitter内容管理器",
+  "version": "1.0.2",
+  "description": "一个优雅的Chrome插件，直接替换Twitter右侧栏，提供智能搜索和内容管理功能。",
+  
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "scripting"
+  ],
+  
+  "host_permissions": [
+    "https://api.twitter.com/*",
+    "https://x.com/*",
+    "https://twitter.com/*"
+  ],
+  
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*", "https://twitter.com/*"],
+      "js": ["content/content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/*", "utils/*", "content/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+} 

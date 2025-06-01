@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xCopilot Tab 功能测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1d9bf0 0%, #1a8cd8 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Tab 导航样式 */
+        .tab-navigation {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-bottom: 3px solid transparent;
+            font-family: inherit;
+            position: relative;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(29, 155, 240, 0.05);
+            color: #1d9bf0;
+        }
+        
+        .tab-btn.active {
+            background: #ffffff;
+            color: #1d9bf0;
+            border-bottom-color: #1d9bf0;
+            box-shadow: 0 -2px 8px rgba(29, 155, 240, 0.1);
+        }
+        
+        /* Tab 内容样式 */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+            box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+        }
+        
+        .primary-btn {
+            background: linear-gradient(135deg, #1d9bf0 0%, #1a8cd8 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .primary-btn:hover {
+            background: linear-gradient(135deg, #1a8cd8 0%, #1570b8 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(29, 155, 240, 0.3);
+        }
+        
+        .success-message {
+            margin-top: 20px;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            animation: slideInUp 0.3s ease;
+        }
+        
+        .success-message.hidden {
+            display: none;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .friend-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .friend-item {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        
+        .friend-item:hover {
+            border-color: #1d9bf0;
+            box-shadow: 0 4px 12px rgba(29, 155, 240, 0.1);
+        }
+        
+        .friend-name {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .friend-username {
+            color: #64748b;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>xCopilot Tab 功能测试</h1>
+            <p>测试好友管理界面的tab切换功能</p>
+        </div>
+        
+        <!-- Tab 导航 -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="add-friend-tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2z"/>
+                </svg>
+                添加好友
+            </button>
+            <button class="tab-btn" data-tab="manage-friends-tab">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                </svg>
+                管理好友
+            </button>
+        </div>
+        
+        <!-- 添加好友 Tab -->
+        <div id="add-friend-tab" class="tab-content active">
+            <h3>添加新好友</h3>
+            <p>在这里添加你想要特别关注的用户</p>
+            
+            <div class="form-group">
+                <label for="friend-name">显示名称</label>
+                <input type="text" id="friend-name" placeholder="如：花生">
+            </div>
+            
+            <div class="form-group">
+                <label for="friend-username">X用户名</label>
+                <input type="text" id="friend-username" placeholder="如：PMbackttfuture">
+            </div>
+            
+            <button id="add-friend-btn" class="primary-btn">添加好友</button>
+            
+            <div id="success-message" class="success-message hidden">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/>
+                </svg>
+                <span>好友添加成功！</span>
+            </div>
+        </div>
+        
+        <!-- 管理好友 Tab -->
+        <div id="manage-friends-tab" class="tab-content">
+            <h3>管理好友列表</h3>
+            <p>在这里管理你的好友列表</p>
+            
+            <div class="friend-list" id="friend-list">
+                <div class="friend-item">
+                    <div class="friend-name">橘子</div>
+                    <div class="friend-username">@oran_ge</div>
+                </div>
+                <div class="friend-item">
+                    <div class="friend-name">小互</div>
+                    <div class="friend-username">@imxiaohu</div>
+                </div>
+                <div class="friend-item">
+                    <div class="friend-name">福祥</div>
+                    <div class="friend-username">@fuxiangPro</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab 切换功能
+        function switchTab(tabId) {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // 移除所有active状态
+            tabBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 激活选中的tab
+            const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+            const activeContent = document.getElementById(tabId);
+            
+            if (activeBtn && activeContent) {
+                activeBtn.classList.add('active');
+                activeContent.classList.add('active');
+            }
+            
+            console.log(`Switched to tab: ${tabId}`);
+        }
+        
+        // 设置tab点击事件
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+                switchTab(tabId);
+            });
+        });
+        
+        // 添加好友功能
+        document.getElementById('add-friend-btn').addEventListener('click', () => {
+            const nameInput = document.getElementById('friend-name');
+            const usernameInput = document.getElementById('friend-username');
+            const successMessage = document.getElementById('success-message');
+            
+            const name = nameInput.value.trim();
+            const username = usernameInput.value.trim();
+            
+            if (!name || !username) {
+                alert('请填写完整的好友信息');
+                return;
+            }
+            
+            // 模拟添加好友
+            console.log(`Adding friend: ${name} (@${username})`);
+            
+            // 清空输入框
+            nameInput.value = '';
+            usernameInput.value = '';
+            
+            // 显示成功提示
+            successMessage.classList.remove('hidden');
+            setTimeout(() => {
+                successMessage.classList.add('hidden');
+            }, 3000);
+            
+            // 添加到好友列表
+            const friendList = document.getElementById('friend-list');
+            const friendItem = document.createElement('div');
+            friendItem.className = 'friend-item';
+            friendItem.innerHTML = `
+                <div class="friend-name">${name}</div>
+                <div class="friend-username">@${username}</div>
+            `;
+            friendList.appendChild(friendItem);
+        });
+        
+        // 回车键添加好友
+        ['friend-name', 'friend-username'].forEach(id => {
+            document.getElementById(id).addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('add-friend-btn').click();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>xCopilot 智能搜索构建器</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 10px; background-color: #f0f2f5; }
+        .search-builder-container { background-color: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .search-category { margin-bottom: 20px; border: 1px solid #e1e8ed; border-radius: 6px; padding: 10px; }
+        .search-category h3 { margin-top: 0; margin-bottom: 10px; font-size: 16px; color: #1da1f2; border-bottom: 1px solid #e1e8ed; padding-bottom: 5px;}
+        .form-group { margin-bottom: 10px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select {
+            width: calc(100% - 22px);
+            padding: 8px 10px;
+            border: 1px solid #ccd0d5;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group input[type="checkbox"] { margin-right: 5px; }
+        .form-group .checkbox-label { font-weight: normal; }
+        .button-group { text-align: right; margin-top: 20px; }
+        .button-group button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #1da1f2;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .button-group button.secondary { background-color: #657786; }
+    </style>
+</head>
+<body>
+    <div class="search-builder-container">
+        <h2>智能搜索构建器</h2>
+
+        <div class="search-category" id="category-content">
+            <h3><img src="../assets/icons/text_fields.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">内容 (Content)</h3>
+            <div class="form-group">
+                <label for="content-keywords">关键词 (Keywords):</label>
+                <input type="text" id="content-keywords" name="content-keywords" placeholder="例如: nasa esa (空格分隔, 隐式 AND)">
+            </div>
+            <div class="form-group">
+                <label for="content-or-keywords">任一关键词 (OR Keywords):</label>
+                <input type="text" id="content-or-keywords" name="content-or-keywords" placeholder="例如: nasa OR esa (用大写 OR 分隔)">
+            </div>
+            <div class="form-group">
+                <label for="content-exact-phrase">精确短语 (Exact Phrase):</label>
+                <input type="text" id="content-exact-phrase" name="content-exact-phrase" placeholder="例如: "state of the art"">
+            </div>
+            <div class="form-group">
+                <label for="content-wildcard-phrase">通配符短语 (Wildcard Phrase):</label>
+                <input type="text" id="content-wildcard-phrase" name="content-wildcard-phrase" placeholder="例如: "this is the * time" (星号在引号内)">
+            </div>
+            <div class="form-group">
+                <label for="content-exclude-word">排除词汇 (Exclude Word):</label>
+                <input type="text" id="content-exclude-word" name="content-exclude-word" placeholder="例如: hate, prayer (空格分隔)">
+            </div>
+            <div class="form-group">
+                <label for="content-hashtag">话题标签 (Hashtag):</label>
+                <input type="text" id="content-hashtag" name="content-hashtag" placeholder="例如: tgif, MondayMotivation (空格分隔, 无需#)">
+            </div>
+            <div class="form-group">
+                <label for="content-force-include-word">强制包含 (Force Include Word):</label>
+                <input type="text" id="content-force-include-word" name="content-force-include-word" placeholder="例如: radiooooo (空格分隔, 无需+)">
+            </div>
+            <div class="form-group">
+                <label for="content-url-contains">链接包含 (URL Contains):</label>
+                <input type="text" id="content-url-contains" name="content-url-contains" placeholder="例如: google.com, typefully">
+            </div>
+            <div class="form-group">
+                <label for="content-language">语言 (Language):</label>
+                <select id="content-language" name="content-language">
+                    <option value="">任何语言</option>
+                    <option value="en">英语 (en)</option>
+                    <option value="zh">中文 (zh)</option>
+                    <option value="es">西班牙语 (es)</option>
+                    <option value="fr">法语 (fr)</option>
+                    <option value="de">德语 (de)</option>
+                    <option value="ja">日语 (ja)</option>
+                    <option value="ko">韩语 (ko)</option>
+                    <option value="ar">阿拉伯语 (ar)</option>
+                    <option value="pt">葡萄牙语 (pt)</option>
+                    <option value="ru">俄语 (ru)</option>
+                    <option value="it">意大利语 (it)</option>
+                    <option value="und">未指定语言 (und)</option>
+                    <option value="qam">仅提及 (qam)</option>
+                    <option value="qct">仅含Cashtag (qct)</option>
+                    <option value="qht">仅含Hashtag (qht)</option>
+                    <option value="qme">含媒体链接 (qme)</option>
+                    <option value="qst">短文本 (qst)</option>
+                    <option value="zxx">仅媒体/卡片 (zxx)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="content-has-question" name="content-has-question">
+                <label for="content-has-question" class="checkbox-label">推文包含问号 (?)</label>
+            </div>
+            <div class="form-group">
+                <label>情感倾向 (Sentiment):</label>
+                <div>
+                    <input type="radio" id="sentiment-any" name="sentiment" value="" checked>
+                    <label for="sentiment-any" class="checkbox-label">不限</label>
+                    <input type="radio" id="sentiment-positive" name="sentiment" value=":)">
+                    <label for="sentiment-positive" class="checkbox-label">正面 :)</label>
+                    <input type="radio" id="sentiment-negative" name="sentiment" value=":(">
+                    <label for="sentiment-negative" class="checkbox-label">负面 :(</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-category" id="category-account">
+            <h3><img src="../assets/icons/person.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">账户 (Account)</h3>
+            <!-- Add account-related inputs here -->
+        </div>
+
+        <div class="search-category" id="category-filter">
+            <h3><img src="../assets/icons/filter_alt.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">筛选 (Filter)</h3>
+            <!-- Add filter-related inputs here -->
+        </div>
+
+        <div class="search-category" id="category-engagement">
+            <h3><img src="../assets/icons/favorite.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">互动 (Engagement)</h3>
+            <!-- Add engagement-related inputs here -->
+        </div>
+
+        <div class="search-category" id="category-datetime">
+            <h3><img src="../assets/icons/calendar_today.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">日期/时间 (Date/Time)</h3>
+            <!-- Add date/time-related inputs here -->
+        </div>
+
+        <div class="search-category" id="category-location">
+            <h3><img src="../assets/icons/location_on.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">地理位置 (Location)</h3>
+            <!-- Add location-related inputs here -->
+        </div>
+
+        <div class="search-category" id="category-tweet-type">
+            <h3><img src="../assets/icons/chat_bubble_outline.svg" alt="" style="width:16px; height:16px; margin-right: 5px;">推文类型 (Tweet Type)</h3>
+            <!-- Add tweet type-related inputs here -->
+        </div>
+        
+        <div class="button-group">
+            <button type="button" id="reset-search">重置</button>
+            <button type="button" id="perform-search">生成搜索语句</button>
+        </div>
+    </div>
+
+    <script src="search_builder.js"></script>
+</body>
+</html> 

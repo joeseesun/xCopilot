@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xCopilot 搜索功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        #xcopilot-search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eff3f4;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        #xcopilot-simple-search-btn {
+            width: 100%;
+            padding: 12px;
+            background: #1d9bf0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #xcopilot-simple-search-btn:hover {
+            background: #1a8cd8;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background: #000;
+            color: #0f0;
+            font-family: monospace;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>xCopilot 搜索功能测试</h1>
+    
+    <div class="test-container">
+        <h3>搜索测试</h3>
+        <input type="text" id="xcopilot-search-input" placeholder="输入搜索关键词...">
+        <button id="xcopilot-simple-search-btn">搜索</button>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        // 日志函数
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${time}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+        
+        // 搜索功能测试
+        function setupTest() {
+            log("🚀 开始设置搜索功能测试...");
+            
+            const simpleSearchBtn = document.getElementById('xcopilot-simple-search-btn');
+            const searchInput = document.getElementById('xcopilot-search-input');
+            
+            log(`✅ 找到元素 - 按钮: ${!!simpleSearchBtn}, 输入框: ${!!searchInput}`);
+            
+            // 搜索函数
+            const performSearch = () => {
+                log("🔍 开始搜索...");
+                
+                if (!searchInput) {
+                    log("❌ 搜索输入框未找到!");
+                    return;
+                }
+                
+                const query = searchInput.value ? searchInput.value.trim() : '';
+                log(`🔍 搜索关键词: "${query}"`);
+                
+                if (!query) {
+                    log("❌ 搜索关键词为空");
+                    alert("请输入搜索关键词");
+                    return;
+                }
+                
+                // 构建搜索URL
+                const searchUrl = `https://x.com/search?q=${encodeURIComponent(query)}&f=live`;
+                log(`🔍 搜索URL: ${searchUrl}`);
+                
+                // 添加视觉反馈
+                if (simpleSearchBtn) {
+                    simpleSearchBtn.textContent = "搜索中...";
+                    simpleSearchBtn.disabled = true;
+                }
+                
+                // 跳转
+                log("🔍 准备跳转...");
+                try {
+                    // 在测试页面中，我们用window.open代替直接跳转
+                    window.open(searchUrl, '_blank');
+                    log("✅ 跳转成功!");
+                    
+                    // 恢复按钮状态
+                    setTimeout(() => {
+                        if (simpleSearchBtn) {
+                            simpleSearchBtn.textContent = "搜索";
+                            simpleSearchBtn.disabled = false;
+                        }
+                    }, 1000);
+                } catch (error) {
+                    log(`❌ 跳转失败: ${error.message}`);
+                    // 恢复按钮状态
+                    if (simpleSearchBtn) {
+                        simpleSearchBtn.textContent = "搜索";
+                        simpleSearchBtn.disabled = false;
+                    }
+                }
+            };
+            
+            // 设置按钮点击事件
+            if (simpleSearchBtn) {
+                log("🔧 设置按钮点击事件");
+                simpleSearchBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    log("🔍 按钮被点击!");
+                    performSearch();
+                });
+            }
+            
+            // 设置输入框事件
+            if (searchInput) {
+                log("🔧 设置输入框事件");
+                
+                // 回车键搜索
+                searchInput.addEventListener('keypress', (e) => {
+                    log(`⌨️ 按键: ${e.key}`);
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        log("⌨️ 检测到回车键!");
+                        performSearch();
+                    }
+                });
+                
+                // 也监听keydown作为备选
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        log("⌨️ 检测到回车键 (keydown)!");
+                        performSearch();
+                    }
+                });
+                
+                log("✅ 输入框事件设置成功");
+            }
+            
+            log("✅ 所有事件设置完成");
+        }
+        
+        // 页面加载完成后设置测试
+        document.addEventListener('DOMContentLoaded', setupTest);
+    </script>
+</body>
+</html> 

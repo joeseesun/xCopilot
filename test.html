@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xCopilot 侧边栏测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #ffffff;
+            color: #14171a;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: #1da1f2;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .demo-section {
+            background: #f7f9fa;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .demo-section h2 {
+            color: #1da1f2;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+
+        .demo-section p {
+            margin-bottom: 12px;
+            color: #657786;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: #1da1f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .mock-twitter {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .mock-tweet {
+            padding: 16px;
+            border-bottom: 1px solid #e1e8ed;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .mock-tweet:hover {
+            background: #f7f9fa;
+        }
+
+        .mock-tweet:last-child {
+            border-bottom: none;
+        }
+
+        .tweet-author {
+            font-weight: bold;
+            color: #14171a;
+            margin-bottom: 4px;
+        }
+
+        .tweet-content {
+            color: #14171a;
+            margin-bottom: 8px;
+        }
+
+        .tweet-meta {
+            color: #657786;
+            font-size: 13px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .instructions {
+            background: #e8f5fd;
+            border: 1px solid #1da1f2;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .instructions h3 {
+            color: #1da1f2;
+            margin-bottom: 8px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 4px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #17bf63;
+        }
+
+        .status-inactive {
+            background: #e0245e;
+        }
+
+        .sidebar-demo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1da1f2;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            .sidebar-demo {
+                position: static;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 xCopilot 侧边栏功能测试</h1>
+        <p>模拟Twitter页面环境，测试侧边栏注入功能</p>
+    </div>
+
+    <div class="container">
+        <div class="demo-section">
+            <h2>📋 功能概览</h2>
+            <p>xCopilot现在支持在Twitter页面直接显示侧边栏，提供无缝的用户体验。</p>
+            
+            <ul class="feature-list">
+                <li>
+                    <div class="feature-icon">📊</div>
+                    <div>
+                        <strong>侧边栏集成</strong>
+                        <div style="font-size: 13px; color: #657786;">直接在Twitter页面右侧显示，类似原生功能</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="feature-icon">🔍</div>
+                    <div>
+                        <strong>实时搜索</strong>
+                        <div style="font-size: 13px; color: #657786;">在侧边栏中搜索和筛选推文内容</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="feature-icon">⚙️</div>
+                    <div>
+                        <strong>智能控制</strong>
+                        <div style="font-size: 13px; color: #657786;">支持最小化、关闭和切换显示</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="feature-icon">🎨</div>
+                    <div>
+                        <strong>主题适配</strong>
+                        <div style="font-size: 13px; color: #657786;">自动适配浅色和深色主题</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="instructions">
+            <h3>🔧 测试说明</h3>
+            <ol>
+                <li>确保已安装xCopilot Chrome插件</li>
+                <li>访问 <a href="https://x.com" target="_blank">x.com</a> 或 <a href="https://twitter.com" target="_blank">twitter.com</a></li>
+                <li>侧边栏会自动在页面右侧显示</li>
+                <li>点击浏览器工具栏中的插件图标可以切换侧边栏显示</li>
+                <li>在侧边栏中测试搜索、筛选等功能</li>
+            </ol>
+        </div>
+
+        <div class="demo-section">
+            <h2>🐦 模拟Twitter内容</h2>
+            <p>以下是模拟的Twitter推文内容，用于演示侧边栏功能：</p>
+            
+            <div class="mock-twitter">
+                <div class="mock-tweet">
+                    <div class="tweet-author">@xCopilot_User</div>
+                    <div class="tweet-content">刚刚完成了一个很棒的项目！使用了最新的技术栈，学到了很多新东西。#编程 #学习</div>
+                    <div class="tweet-meta">
+                        <span>2小时前</span>
+                        <span>❤️ 15</span>
+                        <span>🔄 3</span>
+                        <span>💬 2</span>
+                    </div>
+                </div>
+                
+                <div class="mock-tweet">
+                    <div class="tweet-author">@xCopilot_User</div>
+                    <div class="tweet-content">今天的天气真不错，适合出去走走。有时候离开电脑屏幕，到外面呼吸新鲜空气是很重要的。</div>
+                    <div class="tweet-meta">
+                        <span>5小时前</span>
+                        <span>❤️ 8</span>
+                        <span>🔄 1</span>
+                        <span>💬 4</span>
+                    </div>
+                </div>
+                
+                <div class="mock-tweet">
+                    <div class="tweet-author">@xCopilot_User</div>
+                    <div class="tweet-content">分享一个很有用的开发技巧：使用Chrome DevTools的Performance面板可以帮助优化网页性能。</div>
+                    <div class="tweet-meta">
+                        <span>1天前</span>
+                        <span>❤️ 32</span>
+                        <span>🔄 12</span>
+                        <span>💬 6</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2>📈 开发状态</h2>
+            <p>当前开发进度和功能状态：</p>
+            
+            <ul class="feature-list">
+                <li>
+                    <span class="status-indicator status-active"></span>
+                    <strong>侧边栏注入</strong> - 已完成
+                </li>
+                <li>
+                    <span class="status-indicator status-active"></span>
+                    <strong>UI界面</strong> - 已完成
+                </li>
+                <li>
+                    <span class="status-indicator status-active"></span>
+                    <strong>搜索筛选</strong> - 已完成
+                </li>
+                <li>
+                    <span class="status-indicator status-active"></span>
+                    <strong>主题切换</strong> - 已完成
+                </li>
+                <li>
+                    <span class="status-indicator status-inactive"></span>
+                    <strong>Twitter API</strong> - 开发中
+                </li>
+                <li>
+                    <span class="status-indicator status-inactive"></span>
+                    <strong>用户认证</strong> - 计划中
+                </li>
+            </ul>
+        </div>
+
+        <div class="demo-section">
+            <h2>🎯 下一步计划</h2>
+            <p>接下来的开发重点：</p>
+            
+            <ol style="margin-left: 20px;">
+                <li><strong>Twitter API集成</strong> - 连接真实的Twitter数据</li>
+                <li><strong>OAuth认证</strong> - 实现用户登录和授权</li>
+                <li><strong>实时数据同步</strong> - 获取最新的推文数据</li>
+                <li><strong>高级功能</strong> - 推文分析、数据导出等</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="sidebar-demo">
+        💡 在真实的Twitter页面上，xCopilot侧边栏会显示在这个位置
+    </div>
+
+    <script>
+        // 简单的交互效果
+        document.querySelectorAll('.mock-tweet').forEach(tweet => {
+            tweet.addEventListener('click', () => {
+                tweet.style.background = '#e8f5fd';
+                setTimeout(() => {
+                    tweet.style.background = '';
+                }, 200);
+            });
+        });
+
+        // 检查插件状态
+        if (typeof chrome !== 'undefined' && chrome.runtime) {
+            console.log('✅ Chrome扩展环境检测成功');
+        } else {
+            console.log('⚠️ 未检测到Chrome扩展环境');
+        }
+    </script>
+</body>
+</html> 
