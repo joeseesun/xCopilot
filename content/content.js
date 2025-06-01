@@ -668,9 +668,7 @@ class XCopilotContentScript {
                     <span class="version-badge">v0.1.1</span>
                 </div>
                 <a href="https://x.com/vista8" target="_blank" class="author-link" title="关注作者 @vista8">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06L5.106 17.834a.75.75 0 001.06 1.06l1.592-1.591zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.592a.75.75 0 00-1.061 1.061l1.59 1.591z"/>
-                    </svg>
+                    👨‍💻
                 </a>
             </div>
             <div id="xcopilot-simple-search-section">
@@ -1119,12 +1117,15 @@ class XCopilotContentScript {
                 font-size: 15px;
                 color: #0f1419;
                 background: #ffffff;
-                padding: 24px 20px;
+                padding: 20px 16px;
                 box-sizing: border-box;
                 min-height: 100vh;
                 pointer-events: auto !important;
                 position: relative;
                 z-index: 997;
+                width: 320px;
+                max-width: 320px;
+                overflow-x: hidden;
             }
             
             #xcopilot-header {
@@ -1139,6 +1140,8 @@ class XCopilotContentScript {
                 display: flex;
                 align-items: center;
                 gap: 8px;
+                flex: 1;
+                min-width: 0;
             }
             
             .brand-name {
@@ -1163,16 +1166,40 @@ class XCopilotContentScript {
                 border-radius: 8px;
                 line-height: 1;
                 letter-spacing: 0.5px;
+                flex-shrink: 0;
+            }
+            
+            .author-link {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: #f7f9fa;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-decoration: none;
+                font-size: 16px;
+                transition: all 0.2s ease;
+                flex-shrink: 0;
+                border: 2px solid transparent;
+            }
+            
+            .author-link:hover {
+                background: #1d9bf0;
+                border-color: #1d9bf0;
+                transform: scale(1.1);
+                box-shadow: 0 4px 12px rgba(29, 155, 240, 0.3);
             }
             
             #xcopilot-simple-search-section {
                 position: relative;
                 pointer-events: auto;
+                margin-bottom: 24px;
             }
             
             #xcopilot-search-input {
                 width: 100%;
-                padding: 16px 20px;
+                padding: 14px 16px;
                 border: 2px solid #eff3f4;
                 border-radius: 16px;
                 box-sizing: border-box;
@@ -1248,7 +1275,6 @@ class XCopilotContentScript {
             
             /* 快速@好友模块样式 */
             #xcopilot-friends-section {
-                margin-top: 24px;
                 padding-top: 20px;
                 border-top: 1px solid #eff3f4;
             }
@@ -1281,6 +1307,7 @@ class XCopilotContentScript {
                 font-size: 12px;
                 transition: all 0.2s ease;
                 color: #657786;
+                flex-shrink: 0;
             }
             
             #manage-friends-btn:hover {
@@ -1290,24 +1317,26 @@ class XCopilotContentScript {
             }
             
             #xcopilot-friends-list {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
+                display: flex;
+                flex-direction: column;
                 gap: 8px;
             }
             
             .friend-item {
                 display: flex;
                 align-items: center;
-                gap: 4px;
-                padding: 6px;
+                gap: 8px;
+                padding: 8px;
                 background: #f7f9fa;
                 border-radius: 8px;
                 transition: all 0.2s ease;
                 cursor: pointer;
                 border: 1px solid transparent;
-                min-height: 40px;
+                min-height: 44px;
                 box-sizing: border-box;
                 position: relative;
+                width: 100%;
+                overflow: hidden;
             }
             
             .friend-item:hover {
@@ -1322,8 +1351,8 @@ class XCopilotContentScript {
             }
             
             .friend-avatar {
-                width: 24px;
-                height: 24px;
+                width: 28px;
+                height: 28px;
                 border-radius: 50%;
                 display: flex;
                 align-items: center;
@@ -1333,7 +1362,7 @@ class XCopilotContentScript {
             
             .avatar-text {
                 color: #ffffff;
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 700;
                 line-height: 1;
             }
@@ -1341,15 +1370,15 @@ class XCopilotContentScript {
             .friend-info {
                 display: flex;
                 flex-direction: column;
-                gap: 1px;
+                gap: 2px;
                 flex: 1;
                 min-width: 0;
                 overflow: hidden;
-                margin-right: 20px;
+                margin-right: 24px;
             }
             
             .friend-name {
-                font-size: 10px;
+                font-size: 12px;
                 font-weight: 600;
                 color: #0f1419;
                 line-height: 1.2;
@@ -1359,7 +1388,7 @@ class XCopilotContentScript {
             }
             
             .friend-username {
-                font-size: 9px;
+                font-size: 11px;
                 color: #657786;
                 line-height: 1.2;
                 overflow: hidden;
@@ -1370,26 +1399,26 @@ class XCopilotContentScript {
             .friend-actions {
                 position: absolute;
                 top: 50%;
-                right: 4px;
+                right: 8px;
                 transform: translateY(-50%);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 18px;
-                height: 18px;
+                width: 20px;
+                height: 20px;
             }
             
             .copy-btn {
-                width: 18px;
-                height: 18px;
+                width: 20px;
+                height: 20px;
                 border: none;
                 background: #ffffff;
-                border-radius: 3px;
+                border-radius: 4px;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 9px;
+                font-size: 10px;
                 transition: all 0.2s ease;
                 box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
                 opacity: 0;
