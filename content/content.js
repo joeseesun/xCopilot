@@ -1397,9 +1397,538 @@ class XCopilotContentScript {
             }
             
             .friend-actions {
+                position: absolute;
+                top: 50%;
+                right: 8px;
+                transform: translateY(-50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 20px;
+                height: 20px;
+            }
+            
+            .copy-btn {
+                width: 20px;
+                height: 20px;
+                border: none;
+                background: #ffffff;
+                border-radius: 4px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                transition: all 0.2s ease;
+                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                opacity: 0;
+                visibility: hidden;
+            }
+            
+            .copy-btn:hover {
+                background: #1d9bf0;
+                color: #ffffff;
+                transform: scale(1.1);
+                box-shadow: 0 2px 8px rgba(29, 155, 240, 0.3);
+            }
+            
+            .copy-btn:active {
+                transform: scale(0.95);
+            }
+            
+            .copy-btn.copied {
+                background: #00ba7c;
+                color: #ffffff;
+            }
+            
+            .copy-btn.copied::after {
+                content: "✓";
+                font-size: 12px;
+            }
+            
+            /* 好友管理弹层样式 - 完全重新设计 */
+            .xcopilot-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 10000;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .xcopilot-modal.show {
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .modal-backdrop {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(4px);
+            }
+            
+            .modal-content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 900px;
+                max-height: 90vh;
+                background: #ffffff;
+                border-radius: 20px;
+                box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            }
+            
+            .modal-header {
+                background: linear-gradient(135deg, #1d9bf0 0%, #1a8cd8 100%);
+                color: #ffffff;
+                padding: 24px 32px;
+                border-bottom: none;
+                position: relative;
+            }
+            
+            .header-content h2 {
+                margin: 0 0 8px 0;
+                font-size: 24px;
+                font-weight: 700;
+                letter-spacing: -0.02em;
+            }
+            
+            .header-subtitle {
+                margin: 0;
+                font-size: 14px;
+                opacity: 0.9;
+                font-weight: 400;
+            }
+            
+            .close-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 40px;
+                height: 40px;
+                border: none;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #ffffff;
+                transition: all 0.2s ease;
+                backdrop-filter: blur(10px);
+            }
+            
+            .close-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+            
+            /* Tab 导航样式 */
+            .tab-navigation {
+                display: flex;
+                background: #f8fafc;
+                border-bottom: 1px solid #e2e8f0;
+                padding: 0;
+                margin: 0;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                padding: 16px 24px;
+                border: none;
+                background: transparent;
+                color: #64748b;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                border-bottom: 3px solid transparent;
+                font-family: inherit;
+                position: relative;
+            }
+            
+            .tab-btn:hover {
+                background: rgba(29, 155, 240, 0.05);
+                color: #1d9bf0;
+            }
+            
+            .tab-btn.active {
+                background: #ffffff;
+                color: #1d9bf0;
+                border-bottom-color: #1d9bf0;
+                box-shadow: 0 -2px 8px rgba(29, 155, 240, 0.1);
+            }
+            
+            .tab-btn svg {
+                transition: transform 0.2s ease;
+            }
+            
+            .tab-btn:hover svg,
+            .tab-btn.active svg {
+                transform: scale(1.1);
+            }
+            
+            /* Tab 内容样式 */
+            .tab-content {
+                display: none;
+                animation: fadeIn 0.3s ease;
+            }
+            
+            .tab-content.active {
+                display: block;
+            }
+            
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            
+            /* 成功提示样式 */
+            .success-message {
+                margin-top: 20px;
+                padding: 16px 20px;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: #ffffff;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-weight: 500;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                animation: slideInUp 0.3s ease;
+            }
+            
+            .success-message.hidden {
+                display: none;
+            }
+            
+            .success-message svg {
+                flex-shrink: 0;
+            }
+            
+            @keyframes slideInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .modal-body {
+                flex: 1;
+                overflow-y: auto;
+                padding: 0;
+            }
+            
+            .add-friend-section {
+                padding: 32px;
+                background: #f8fafc;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            .section-title {
+                margin-bottom: 24px;
+            }
+            
+            .section-title h3 {
+                margin: 0 0 8px 0;
+                font-size: 20px;
+                font-weight: 600;
+                color: #1e293b;
+                letter-spacing: -0.01em;
+            }
+            
+            .section-description {
+                margin: 0;
+                font-size: 14px;
+                color: #64748b;
+                line-height: 1.5;
+            }
+            
+            .add-friend-form {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                align-items: end;
+            }
+            
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .form-group label {
+                font-size: 14px;
+                font-weight: 600;
+                color: #374151;
+                margin: 0;
+            }
+            
+            .form-group input {
+                padding: 12px 16px;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                font-size: 15px;
+                background: #ffffff;
+                transition: all 0.2s ease;
+                font-family: inherit;
+            }
+            
+            .form-group input:focus {
+                outline: none;
+                border-color: #1d9bf0;
+                box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+            }
+            
+            .input-with-prefix {
+                position: relative;
+                display: flex;
+                align-items: center;
+                border: 2px solid #e5e7eb;
+                border-radius: 12px;
+                background: #ffffff;
+                transition: all 0.2s ease;
+            }
+            
+            .input-with-prefix:focus-within {
+                border-color: #1d9bf0;
+                box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+            }
+            
+            .input-prefix {
+                padding: 12px 0 12px 16px;
+                color: #6b7280;
+                font-size: 15px;
+                font-weight: 500;
+            }
+            
+            .input-with-prefix input {
+                flex: 1;
+                padding: 12px 16px 12px 0;
+                border: none;
+                background: transparent;
+                font-size: 15px;
+            }
+            
+            .input-with-prefix input:focus {
+                outline: none;
+                box-shadow: none;
+            }
+            
+            .primary-btn {
+                grid-column: span 2;
+                padding: 14px 24px;
+                background: linear-gradient(135deg, #1d9bf0 0%, #1a8cd8 100%);
+                color: #ffffff;
+                border: none;
+                border-radius: 12px;
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                font-family: inherit;
+                letter-spacing: 0.01em;
+            }
+            
+            .primary-btn:hover {
+                background: linear-gradient(135deg, #1a8cd8 0%, #1570b8 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 8px 25px rgba(29, 155, 240, 0.3);
+            }
+            
+            .primary-btn:active {
+                transform: translateY(0);
+            }
+            
+            .friends-list-section {
+                padding: 32px;
+            }
+            
+            .section-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 24px;
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            
+            .section-header .section-title {
+                margin: 0;
+                flex: 1;
+            }
+            
+            .friends-count {
+                font-size: 14px;
+                color: #64748b;
+                font-weight: 500;
+            }
+            
+            .management-actions {
+                display: flex;
+                gap: 12px;
+            }
+            
+            .secondary-btn,
+            .danger-btn {
+                padding: 10px 16px;
+                border: 2px solid;
+                border-radius: 10px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s ease;
                 display: flex;
                 align-items: center;
                 gap: 6px;
+                font-family: inherit;
+            }
+            
+            .secondary-btn {
+                background: #ffffff;
+                border-color: #1d9bf0;
+                color: #1d9bf0;
+            }
+            
+            .secondary-btn:hover {
+                background: #1d9bf0;
+                color: #ffffff;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(29, 155, 240, 0.3);
+            }
+            
+            .danger-btn {
+                background: #ffffff;
+                border-color: #ef4444;
+                color: #ef4444;
+            }
+            
+            .danger-btn:hover {
+                background: #ef4444;
+                color: #ffffff;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            }
+            
+            .modal-friends-list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+                max-height: 500px;
+                overflow-y: auto;
+                padding: 4px;
+            }
+            
+            .modal-friend-item {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                padding: 24px;
+                background: #ffffff;
+                border: 2px solid #f1f5f9;
+                border-radius: 16px;
+                transition: all 0.2s ease;
+            }
+            
+            .modal-friend-item:hover {
+                border-color: #1d9bf0;
+                box-shadow: 0 8px 25px rgba(29, 155, 240, 0.1);
+                transform: translateY(-2px);
+            }
+            
+            .modal-friend-item .friend-info {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .modal-friend-item .friend-avatar {
+                width: 56px;
+                height: 56px;
+                flex-shrink: 0;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .modal-friend-item .avatar-text {
+                font-size: 20px;
+                font-weight: 700;
+                color: #ffffff;
+            }
+            
+            .friend-details {
+                display: flex;
+                flex-direction: row;
+                gap: 12px;
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .friend-details input {
+                padding: 12px 16px;
+                border: 2px solid #e5e7eb;
+                border-radius: 10px;
+                font-size: 15px;
+                background: #ffffff;
+                transition: all 0.2s ease;
+                font-family: inherit;
+                flex: 1;
+                min-width: 0;
+            }
+            
+            .friend-details input:focus {
+                outline: none;
+                border-color: #1d9bf0;
+                box-shadow: 0 0 0 3px rgba(29, 155, 240, 0.1);
+            }
+            
+            .friend-details input:first-child {
+                flex: 1.2;
+            }
+            
+            .friend-details input:last-child {
+                flex: 1;
+            }
+            
+            .friend-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
                 flex-shrink: 0;
                 position: static;
                 transform: none;
@@ -1408,8 +1937,8 @@ class XCopilotContentScript {
             }
             
             .friend-actions button {
-                width: 32px;
-                height: 32px;
+                width: 36px;
+                height: 36px;
                 border: none;
                 border-radius: 8px;
                 cursor: pointer;
@@ -1843,7 +2372,8 @@ class XCopilotContentScript {
             { name: "小互", username: "imxiaohu", id: Date.now() + 2 },
             { name: "福祥", username: "fuxiangPro", id: Date.now() + 3 },
             { name: "七娘", username: "GlocalTerapy", id: Date.now() + 4 },
-            { name: "歸藏", username: "op7418", id: Date.now() + 5 }
+            { name: "歸藏", username: "op7418", id: Date.now() + 5 },
+            { name: "黄叔", username: "PMbackttfuture", id: Date.now() + 6 }
         ];
     }
     
@@ -1984,13 +2514,13 @@ class XCopilotContentScript {
                             <div class="add-friend-form">
                                 <div class="form-group">
                                     <label for="modal-friend-name-input">显示名称</label>
-                                    <input type="text" id="modal-friend-name-input" placeholder="如：花生" autocomplete="off">
+                                    <input type="text" id="modal-friend-name-input" placeholder="如：向阳乔木" autocomplete="off">
                                 </div>
                                 <div class="form-group">
                                     <label for="modal-friend-username-input">X用户名</label>
                                     <div class="input-with-prefix">
                                         <span class="input-prefix">@</span>
-                                        <input type="text" id="modal-friend-username-input" placeholder="PMbackttfuture" autocomplete="off">
+                                        <input type="text" id="modal-friend-username-input" placeholder="vista8" autocomplete="off">
                                     </div>
                                 </div>
                                 <button id="modal-add-friend-btn" class="primary-btn">
